@@ -16,12 +16,12 @@ class join():
                         mailto.append(quotes[i])
                     if str(quotes[i]).find("mailto:") != -1:
                         mailto.append(quotes[i])
-            except :
-                print("error: SSL error")
+            except Exception as  e:
+                print("error: " , e)
                 
             
         return mailto
-            #pogoda_now = str(quotes[1]).replace('<td class="temper">', '').replace('</td>', '')
+            
 
 
     def filter(_base):
