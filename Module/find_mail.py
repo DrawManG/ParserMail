@@ -1,17 +1,27 @@
 import requests
 from bs4 import BeautifulSoup
 from Module.filter_link import filter_link
+import time
+from requests.adapters import HTTPAdapter, Retry
 
 class join():
     def finder(__search):
         mailto=[]
+        s = requests.Session()
+
+        retries = Retry(total=1,
+                backoff_factor=1,
+                status_forcelist=[ 500, 502, 503, 504,404 ])
         for k in range(len(__search)):
             #code discord_boku_bot
             url_now = __search[k]
-            
-            
+            print(url_now)
+
             try:
-                response = requests.get(url_now)
+                
+                time.sleep(2)
+                s.mount('https://', HTTPAdapter(max_retries=retries))
+                response = s.get(url_now,allow_redirects=False)
                 soup = BeautifulSoup(response.text,'lxml')
                 quotes = soup.find_all('a')
                 for i in range(len(quotes)):
@@ -20,13 +30,14 @@ class join():
                     if str(quotes[i]).find("mailto:") != -1:
                         mailto.append(quotes[i])
             except Exception as  e:
-                print("error: " [k], e)
-                print("Пробуем запустить через 80 порт...")
+
                 try:
+                    print("error: " [k], e)
+                    print("Пробуем запустить через 80 порт...")
+                    time.sleep(2)
+                    s.mount('http://', HTTPAdapter(max_retries=retries))
                     filter_link.join(url_now)
-
-
-                    response = requests.get(url_now,verify=False)
+                    response = s.get(url_now,verify=False,allow_redirects=False)
                     soup = BeautifulSoup(response.text,'lxml')
                     quotes = soup.find_all('a')
                     for i in range(len(quotes)):
@@ -35,7 +46,7 @@ class join():
                         if str(quotes[i]).find("mailto:") != -1:
                             mailto.append(quotes[i])
                 except Exception as  e:
-                    print("error: "[k],e)
+                    print("error: ",e)
                 
                 
             

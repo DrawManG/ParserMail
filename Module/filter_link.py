@@ -16,6 +16,3 @@ class filter_link():
             full_link = full_link + link[i] + "/"
         return full_link
 
-
-#_link = "https://vk.com/im?sel="
-#filter_link.join(_link)
