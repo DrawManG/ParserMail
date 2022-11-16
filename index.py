@@ -3,10 +3,10 @@ from os.path import abspath
 import colorama
 
 text = 'We make custom music from $10'
-how_many = 20
+how_many = 15
 txt_file = False
 
-text = text.strip()
+#text = text.strip()
 _send_google = send_google.join.search(text, how_many)
 print(colorama.Fore.LIGHTBLUE_EX + "link google: ", _send_google, "\n")
 out_mail = find_mail.join.finder(_send_google)

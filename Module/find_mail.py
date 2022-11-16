@@ -8,6 +8,30 @@ import warnings
 
 
 class join():
+    def finder_process(mailto, s, url_now, retries, smount, response, filter, headers):
+        example = """
+time.sleep(2)
+{smount}
+{filter}
+{response}
+soup = BeautifulSoup(response.text, 'lxml')
+quotes = soup.find_all('a')
+for i in range(len(quotes)):
+ if str(quotes[i]).find("compose?To") != -1:
+  mailto.append(quotes[i])
+ if str(quotes[i]).find("mailto:") != -1:
+   mailto.append(quotes[i])
+"""
+        if filter == True:
+            filter = "filter_link.join(url_now)"
+        else:
+            filter = ""
+        start = example.replace("{smount}", smount).replace(
+            "{filter}", filter).replace("{response}", response)
+        exec(
+            start)
+        return mailto, s, url_now, retries, smount, response, filter, headers
+
     def finder(__search):
         warnings.simplefilter("ignore")
         mailto = []
@@ -19,66 +43,43 @@ class join():
                         backoff_factor=0.5,
                         status_forcelist=[500, 502, 503, 504, 404])
         for k in range(len(__search)):
-            # code discord_boku_bot
             url_now = __search[k]
             print(colorama.Fore.GREEN, k+1, url_now)
 
             try:
 
-                time.sleep(2)
-                s.mount('https://', HTTPAdapter(max_retries=retries))
-                response = s.get(url_now, allow_redirects=False)
-                soup = BeautifulSoup(response.text, 'lxml')
-                quotes = soup.find_all('a')
-                for i in range(len(quotes)):
-                    if str(quotes[i]).find("compose?To") != -1:
-                        mailto.append(quotes[i])
-                    if str(quotes[i]).find("mailto:") != -1:
-                        mailto.append(quotes[i])
+                mailto, s, url_now, retries, smount, response, filter, headers = join.finder_process(mailto=mailto, s=s, url_now=url_now, retries=retries,
+                                                                                                     smount="s.mount('https://', HTTPAdapter(max_retries=retries))",
+                                                                                                     response="response = s.get(url_now, allow_redirects=False)",
+                                                                                                     filter=False,
+                                                                                                     headers=headers
+                                                                                                     )
             except Exception as e:
 
                 try:
                     if str(e).find("Max retries exceeded with url:") != -1:
                         pass
                     else:
-                        print(colorama.Fore.YELLOW + "error: ", k, e)
-                    print(colorama.Fore.CYAN +
+                        print(colorama.Fore.YELLOW, "error: ", k, e)
+                    print(colorama.Fore.CYAN,
                           "[1 method] Trying to play through port 80...")
-                    time.sleep(2)
-                    s.mount('http://', HTTPAdapter(max_retries=retries))
-                    filter_link.join(url_now)
-                    response = s.get(url_now, verify=False,
-                                     allow_redirects=False)
-                    soup = BeautifulSoup(response.text, 'lxml')
-                    quotes = soup.find_all('a')
-                    for i in range(len(quotes)):
-                        if str(quotes[i]).find("compose?To") != -1:
-                            mailto.append(quotes[i])
-                        if str(quotes[i]).find("mailto:") != -1:
-                            mailto.append(quotes[i])
+                    mailto, s, url_now, retries, smount, response, filter, headers = join.finder_process(mailto=mailto, s=s, url_now=url_now, retries=retries,
+                                                                                                         smount="s.mount('http://', HTTPAdapter(max_retries=retries))",
+                                                                                                         response="response = s.get(url_now, verify=False,allow_redirects=False)",
+                                                                                                         filter=True,
+                                                                                                         headers=headers
+                                                                                                         )
                 except Exception as e:
                     try:
                         if str(e).find("Max retries exceeded with url:") != -1:
                             print(
                                 colorama.Fore.CYAN + "[2 method] Adding a deceptive browser to read cookies")
-                            time.sleep(2)
-                            s.mount('https://', HTTPAdapter(max_retries=retries))
-                            try:
-                                response = s.get(url_now, verify=False,
-                                                 allow_redirects=False, headers=headers)
-                            except Exception as e:
-                                if str(e).find("(Caused by SSLError(SSLError(1, '[SSL: TLSV1_ALERT_ACCESS_DENIED] tlsv1 alert access denied (_ssl.c:997)')))") != -1:
-                                    filter_link.join(url_now)
-                                    response = s.get(url_now, verify=False,
-                                                     allow_redirects=False, headers=headers)
-
-                            soup = BeautifulSoup(response.text, 'lxml')
-                            quotes = soup.find_all('a')
-                            for i in range(len(quotes)):
-                                if str(quotes[i]).find("compose?To") != -1:
-                                    mailto.append(quotes[i])
-                            if str(quotes[i]).find("mailto:") != -1:
-                                mailto.append(quotes[i])
+                            mailto, s, url_now, retries, smount, response, filter, headers = join.finder_process(mailto=mailto, s=s, url_now=url_now, retries=retries,
+                                                                                                                 smount="s.mount('https://', HTTPAdapter(max_retries=retries))",
+                                                                                                                 response="response = s.get(url_now, verify=False,allow_redirects=False, headers=headers)",
+                                                                                                                 filter=False,
+                                                                                                                 headers=headers
+                                                                                                                 )
                         else:
                             print(colorama.Fore.RED + "error: ", e)
                     except Exception as e:
