@@ -10,7 +10,7 @@ class join():
     def finder(__search):
         mailto = []
         s = requests.Session()
-
+        headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36'}
         retries = Retry(connect=3,
                         total=1,
                         backoff_factor=0.5,
@@ -24,7 +24,7 @@ class join():
 
                 time.sleep(2)
                 s.mount('https://', HTTPAdapter(max_retries=retries))
-                response = s.get(url_now, allow_redirects=False)
+                response = s.get(url_now, allow_redirects=False,headers=headers)
                 soup = BeautifulSoup(response.text, 'lxml')
                 quotes = soup.find_all('a')
                 for i in range(len(quotes)):
@@ -42,7 +42,7 @@ class join():
                     s.mount('http://', HTTPAdapter(max_retries=retries))
                     filter_link.join(url_now)
                     response = s.get(url_now, verify=False,
-                                     allow_redirects=False)
+                                     allow_redirects=False,headers=headers)
                     soup = BeautifulSoup(response.text, 'lxml')
                     quotes = soup.find_all('a')
                     for i in range(len(quotes)):
