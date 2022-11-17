@@ -1,6 +1,7 @@
 
 
 class join():
+    # This is where data is searched for.
     def search(text, how):
         try:
             from googlesearch import search

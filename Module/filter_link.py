@@ -1,4 +1,6 @@
 class filter_link():
+
+    # Here the link is taken and changed to type for port 80 (from 443 https)
     def join(link):
 
         link = str(link).replace("https", "http")
